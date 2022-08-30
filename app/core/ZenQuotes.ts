@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { quotesJSON } from './tmp/quotes'
 
-export const ZenQuotes = async ()=>{
+export const ZenQuotes : Function = async () : Promise<object[] | undefined> =>{
     try {
 /*         const ZEN_URL = 'https://zenquotes.io/api/quotes/'
         const proxy = 'https://cors-anywhere.herokuapp.com/'

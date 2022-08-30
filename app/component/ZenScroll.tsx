@@ -1,81 +1,69 @@
 import { Dimensions, StatusBar } from 'react-native'
 import React from 'react'
-import Item from './Item'
-import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler'
+import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated'
 
 import { ZenItems, ZenItemType, ZenItemsType } from '../core/ZenItems'
+import { ZenViewItems } from './ZenViewItems'
+import { randomItems } from '../helpers/HelperArray'
+
+// import Toast from 'react-native-root-toast'
 
 const {height} = Dimensions.get('window')
 
+let loadData : boolean = false
+
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView)
 
-let loadData = true
+export const ZenScroll: React.FC = () : JSX.Element => {
 
-export const ZenScroll: React.FC = () => {
-
-  const [data, setData] = React.useState<any[]>(['lorem'])
+  const [data, setData] = React.useState<ZenItemType[]>([])
+  const [randomData, setRandomData] = React.useState<ZenItemType[]>([])
+  const y = useSharedValue(0)
 
   React.useEffect(() => {
-    if(loadData) {
-      (async () => await ZenItems().then((items : ZenItemsType) => {
-        const merged = [...data]
-        items._forEach((value : ZenItemType, index : number) => {
-          if(id in value) merged.push(value)    
-        })
-        setData([...merged])
+    if(!loadData) {
+      (async () => await ZenItems().then((items : ZenItemsType) : void => {
+        const merged : ZenItemType[] = [...data]
+        items._forEach((
+          value : ZenItemType, index : number) => merged.push(value)    
+        )
+        setData(merged)
+        setRandomData(randomItems(merged, merged.length / 2))
+        loadData = true
       }))()
-      loadData = false
-    } 
+    }   
   }, [data])
 
-  const y = useSharedValue(0)
-  
-  const [ animatedViewHeight, setAnimatedViewHeight ] = React.useState(0)
-  
-  const onScroll = useAnimatedScrollHandler(event => {
-    y.value = event.contentOffset.y
-    setAnimatedViewHeightValue()
-  })
+  //const [clonedIndex, setClonedIndex] = React.useState<number[]>([])
 
-  const [clonedIndex, setClonedIndex] = React.useState<number[]>([])
-
-  const onHidden = (index : number) => {
-      if(index in clonedIndex) return
+  const onHidden : Function = (index : number) : void => {
+      'worklet'
+      /* if(index in clonedIndex) return
       const hiddenItem = data[index]
       setClonedIndex([...clonedIndex, index])
       let mergedList : ZenItemType[] = [...data, hiddenItem]
-      setData(mergedList)
+      setData(mergedList) */
   }
 
-  const setAnimatedViewHeightValue = () => {
-    console.log('setAniVieVal', data)
-    setAnimatedViewHeight(data.length * height)
-  }
-  
+  const onScroll = useAnimatedScrollHandler( event => y.value = event.contentOffset.y )
+
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <StatusBar hidden />
       <AnimatedScrollView
         scrollEventThrottle={16}
-        snapToInterval={height / 1.15}
+        snapToInterval={height}
         decelerationRate="fast"
         style={{backgroundColor: 'black'}}
         onScroll={onScroll}>
-        <Animated.View style={{
-          height: animatedViewHeight
-        }}>
-          {data.map((item : ZenItemType, index : number) => (
-            <Item 
-              y={y} 
-              onHidden={(index: number) => onHidden(index)}
-              index={index} 
-              item={item} 
-              key={index} />
-          ))}
-        </Animated.View>
+        <ZenViewItems 
+          y={y}
+          height={randomData.length * height}
+          data={randomData}
+          onHidden={onHidden}
+        />
       </AnimatedScrollView>
     </GestureHandlerRootView>
   )
 }
-
