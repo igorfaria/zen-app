@@ -1,0 +1,24 @@
+{
+  "name": "Zen App",
+  "description": "Just some zen quotes and random images as background",
+  "slug": "zenApp",
+  "version": "1.0.1",
+  "orientation": "portrait",
+  "extra": {
+    "eas": {
+      "projectId": "64a27807-767c-4b23-8121-77ae06f2f80d"
+    }
+  },
+  "expo": {
+    "name": "Zen App",
+    "slug": "zenApp",
+    "android": {
+      "package": "com.itfaria.zenApp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "64a27807-767c-4b23-8121-77ae06f2f80d"
+      }
+    }
+  }
+}
