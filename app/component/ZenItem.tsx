@@ -1,8 +1,7 @@
-import { StyleSheet, Dimensions, Text, View, ImageBackground } from 'react-native'
+import { StyleSheet, Dimensions, Text, View,  } from 'react-native'
 import React from 'react'
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming, ZoomIn } from 'react-native-reanimated'
 import {Gesture, GestureDetector} from 'react-native-gesture-handler'
-import { useFonts } from 'expo-font'
 
 import { ZenItemType } from '../core/ZenItems'
 import { ZenImage } from '../component/ZenImage'
@@ -15,8 +14,8 @@ const MAX_HEIGHT : number = height
 const TOUCH_SLOP : number = 5
 const TIME_TO_ACTIVATE_PAN : number = 400
 
-const FADE_HIDDEN : number = 0.45
-const FADE_NEXT : number = 0.65 // it must be different than FADE_HIDDEN
+const FADE_HIDDEN : number = 0.25
+const FADE_NEXT : number = 0.35 // it must be different than FADE_HIDDEN
 
 const ZenItem : Function = (props: any) : JSX.Element => {
 
@@ -26,12 +25,13 @@ const ZenItem : Function = (props: any) : JSX.Element => {
   const index : number = props.index
   const onHidden : Function = props?.onHidden ?? (() => null)
   const itemStyle : object = props?.styke ?? {} 
+  const customFontStyle : any = props?.customFontStyle ?? {quote: {}, wrapper: {fontWeight: '600'}}
  
   const touchStart = useSharedValue({x: 0, y: 0, time: 0})
   const rotateX = useSharedValue(0)
   const rotateY = useSharedValue(0)
 
-  const rStyle = (itemContainer : boolean = false) => {
+  const rStyle = () => {
     return useAnimatedStyle(() => {
       const rHeight : number = interpolate(
         y.value,
@@ -43,22 +43,22 @@ const ZenItem : Function = (props: any) : JSX.Element => {
       const opacity : number = interpolate(
         y.value,
         [(index - 1) * MAX_HEIGHT, index * MAX_HEIGHT, (index + 1) * MAX_HEIGHT],
-        [FADE_NEXT, 0.8, FADE_HIDDEN],
+        [FADE_NEXT, 1, FADE_HIDDEN],
         Extrapolate.CLAMP,
       )
 
       if(opacity == FADE_HIDDEN) onHidden(index)
 
-      const transformStyle = itemContainer 
-      ? {} 
-      : {  opacity: opacity, transform: [
+      const transformStyle = {  
+        opacity: opacity, transform: [
         { perspective: 300 },
-       // { rotateY: `${rotateY.value}deg` }
+        { rotateY: `${rotateY.value}deg` }
       ]}
 
       return {
         height: rHeight,
-        ...transformStyle
+        ...transformStyle,
+        backgroundColor: 'black'
       }
 
     })
@@ -107,18 +107,6 @@ const ZenItem : Function = (props: any) : JSX.Element => {
       rotateX.value = withTiming(0)
     })
 
-
-  let [fontsLoaded] = useFonts({
-    'Montserrat-Thin': require('../assets/fonts/Montserrat/static/Montserrat-Thin.ttf'),
-    'Montserrat-Light': require('../assets/fonts/Montserrat/static/Montserrat-Light.ttf'),
-    'Montserrat-Regular': require('../assets/fonts/Montserrat/static/Montserrat-Regular.ttf'),
-  })
- 
-  const quoteFont : string = 'Montserrat-Light'
-  const wrapperFont : string = 'Montserrat-Regular'
-
-  const customFontStyle : object = { paddingHorizontal: 5, fontFamily: fontsLoaded ? quoteFont : 'sans-serif' }
-
   const usedKeys : string[] = []
   const uniqueKey : Function = () : string => {
     const generatedKey : string = Math.random().toString(36).substr(2, 9)
@@ -140,11 +128,22 @@ const ZenItem : Function = (props: any) : JSX.Element => {
       if(typeof spllitedWords === 'undefined') return undefinedElement
 
       const wordsWrapped : any[] = []
+
+      const replaceSignal : Function = (w : string, undo : boolean = false, substitue : string | boolean = false) : string => {
+          const dotReplace : string = typeof substitue !== 'boolean' ? substitue : '___'
+          const commaReplace : string = typeof substitue !== 'boolean' ? substitue : '|||'
+          return (
+            undo
+            ? w.replace(dotReplace, '.').replace(commaReplace, ',')
+            : w.replace('.', dotReplace).replace(',', commaReplace)
+          ) 
+      } 
       spllitedWords.map(word => {
           word = `${word} `
-          let styleYou = { ...customFontStyle }
-          let wrappedWord : string | JSX.Element = word
-          switch(word.toLocaleLowerCase().trim()) {
+          let wrappedWord : string | JSX.Element = replaceSignal(word, true)
+          const switchWord : string = replaceSignal(word.toLocaleLowerCase(), false, '')
+          console.log(switchWord)
+          switch(switchWord.replace(/\s/, '')) {
             case 'you': case 'love': 
             case 'believe': case 'heart':
             case 'live': case 'life':
@@ -153,39 +152,27 @@ const ZenItem : Function = (props: any) : JSX.Element => {
             case 'truly': case 'best':
             case 'future': case 'dream':
             case 'power': case 'liberty':
-            case 'present': 
-              const wrapperFontStyle : object = (fontsLoaded) 
-              ? { fontFamily: wrapperFont }  
-              : { fontWeight: '700' }
-              styleYou = {...styleYou, ...wrapperFontStyle }
-              const props : object = {style: styleYou, key: uniqueKey()}
-              wrappedWord = <Text {...props}>{word}</Text>
+            case 'present': case 'potential': 
+            case 'emotion': case 'precious': 
+            case 'secret': case 'work': 
+            case 'heal': case 'time': case 'health':
+            case 'mind': case 'action': case 'information' : 
+            case 'wise': 
+              const styleWrap = {...customFontStyle.quote, ...customFontStyle.wrapper }
+              const props : object = {style: styleWrap, key: uniqueKey()}
+              wrappedWord = <Text {...props}>{replaceSignal(word, true)}</Text>
             break
           }
           wordsWrapped.push(wrappedWord)
       })
 
-      return <Text key={uniqueKey()} style={customFontStyle}>{wordsWrapped.map(w => w)}</Text>
+      return <Text key={uniqueKey()} style={customFontStyle.quote}>{wordsWrapped.map(w => w)}</Text>
   }
 
   return (
     <GestureDetector gesture={gesture}>
-      <Animated.View style={rStyle(true)}>
-
-      <ImageBackground 
-        style={ {
-          position: 'absolute',
-          left: 0, top: 0,
-          width: '100%',
-          height: height,
-          zIndex: 1,
-        } } 
-        resizeMode={'cover'}
-        source={ require('../assets/background/pattern-1.jpg') } />
-
-        <Animated.View style={[rStyle(false), {zIndex: 2, backgroundColor: 'black'}]}>
-          <ZenImage source={ { uri: item.image } } style={styles.image} />
-        </Animated.View>
+      <Animated.View style={rStyle()}>
+        <ZenImage source={ { uri: item.image } } style={styles.image} />
         <View style={ styles.quoteContainer }>
           <Text style={ styles.quote }>
               {wordWrapper(item.quote)}
@@ -220,7 +207,7 @@ const styles = StyleSheet.create({
     zIndex: 2
   },
   quoteContainer: {
-    backgroundColor: 'rgba(0, 0, 0,.5)',
+    backgroundColor: 'rgba(0, 0, 0,.7)',
     position: 'absolute',
     left: 0,
     top: 0,

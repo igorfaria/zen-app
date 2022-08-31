@@ -5,16 +5,21 @@ import { ZenItemType } from '../core/ZenItems'
 
 export const ZenViewItems = (props: any) : JSX.Element => {
 
-    const {data, height, onHidden, y} = props
+    const {data, height, onHidden, y, customFontStyle} = props
 
+    const zenItemProps : object = {
+      onHidden,
+      y,
+      customFontStyle,
+    }
+   
     return (
     <Animated.View style={{
         height: height
       }}>
         {data.map((item : ZenItemType, index : number) => (
           <ZenItem 
-            y={y} 
-            onHidden={onHidden}
+            {...zenItemProps}
             index={index} 
             item={item} 
             key={index} 

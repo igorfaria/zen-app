@@ -1,13 +1,15 @@
-import { Dimensions, StatusBar } from 'react-native'
+import { Dimensions, StatusBar, ImageBackground } from 'react-native'
 import React from 'react'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler'
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated'
+
+import { useFonts } from 'expo-font'
 
 import { ZenItems, ZenItemType, ZenItemsType } from '../core/ZenItems'
 import { ZenViewItems } from './ZenViewItems'
 import { RandomItems } from '../helpers/HelperArray'
 
-const {height} = Dimensions.get('window')
+const {width, height} = Dimensions.get('window')
 
 let loadData : boolean = false
 
@@ -27,7 +29,7 @@ export const ZenScroll: React.FC = () : JSX.Element => {
           value : ZenItemType, index : number) => merged.push(value)    
         )
         setData(merged)
-        setRandomData(RandomItems(merged, merged.length / 2))
+        setRandomData(RandomItems(merged, merged.length))
         loadData = true
       }))()
     }   
@@ -46,19 +48,46 @@ export const ZenScroll: React.FC = () : JSX.Element => {
 
   const onScroll = useAnimatedScrollHandler( event => y.value = event.contentOffset.y )
 
+  let [fontsLoaded] = useFonts({
+    'Montserrat-Thin': require('../assets/fonts/Montserrat/static/Montserrat-Thin.ttf'),
+    'Montserrat-Light': require('../assets/fonts/Montserrat/static/Montserrat-Light.ttf'),
+    'Montserrat-Regular': require('../assets/fonts/Montserrat/static/Montserrat-Regular.ttf'),
+  })
+ 
+  const quoteFont : string = 'Montserrat-Light'
+  const wrapperFont : string = 'Montserrat-Regular'
+
+  const customFontStyle : object = { paddingHorizontal: 5, fontFamily: fontsLoaded ? quoteFont : 'sans-serif' }
+  const customWrapperFontStyle : object = {...customFontStyle, fontFamily: fontsLoaded ? wrapperFont : 'sans-serif'}
+  const customFontValues : object = {quote: customFontStyle, wrapper: customWrapperFontStyle}
+
   return (
     <GestureHandlerRootView style={{flex: 1}}>
+
+      <ImageBackground 
+        style={ {
+          position: 'absolute',
+          left: 0, top: y.value,
+          width: width,
+          height: height,
+          zIndex: 1,
+        } } 
+        resizeMode={'cover'}
+        source={ require('../assets/background/pattern-1.jpg') } />
+
       <StatusBar hidden />
       <AnimatedScrollView
-        scrollEventThrottle={8}
+        style={ { zIndex: 2 } }
+        scrollEventThrottle={1}
         snapToInterval={height}
-        decelerationRate="fast"
+        decelerationRate="normal"
         onScroll={onScroll}>
         <ZenViewItems 
           y={y}
           height={randomData.length * height}
           data={randomData}
           onHidden={onHidden}
+          customFontStyle={ customFontValues }
         />
       </AnimatedScrollView>
     </GestureHandlerRootView>
