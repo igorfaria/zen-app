@@ -1,5 +1,5 @@
 
-export const shuffleArray : Function = (items : object[]) : object[] => {
+export const ArrayShuffle : Function = (items : object[]) : object[] => {
   let shuffled : object[] = []
   items.forEach(item => {
       if(Math.random() >= 0.5){
@@ -11,11 +11,11 @@ export const shuffleArray : Function = (items : object[]) : object[] => {
   return shuffled
 }
 
-export  const randomizeArray : Function = (items : object[]) => {
+export  const ArrayRandomize : Function = (items : object[]) => {
     const usedIndex : number[] = []
     const randomItems : object[] = []
     for(let i = 0; i < items.length; i++){
-       const randomIndex : number = randomNumber(0, items.length)
+       const randomIndex : number = NumberRandom(0, items.length)
        if(randomIndex in usedIndex) continue
        usedIndex.push(randomIndex)
        const randomItem : object = items[randomIndex]
@@ -24,13 +24,13 @@ export  const randomizeArray : Function = (items : object[]) => {
     return randomItems
 }
 
-export const randomItems : Function = (items : object[], max : number) : object[] => {
-    const shuffled : object[] = shuffleArray(items)
+export const RandomItems : Function = (items : object[], max : number) : object[] => {
+    const shuffled : object[] = ArrayShuffle(items)
     const total = (items.length - max) < max ? max = items.length : max
-    const randomized = randomizeArray(shuffled)
+    const randomized = ArrayRandomize(shuffled)
     return randomized.slice(0, total)
  }
 
-export const randomNumber : Function = (min: number, max: number) : number  => {
+export const NumberRandom : Function = (min: number, max: number) : number  => {
     return  Math.floor(Math.random() * (max - min + 1)) + min
 }
