@@ -5,9 +5,7 @@ import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native
 
 import { ZenItems, ZenItemType, ZenItemsType } from '../core/ZenItems'
 import { ZenViewItems } from './ZenViewItems'
-import { randomItems } from '../helpers/HelperArray'
-
-// import Toast from 'react-native-root-toast'
+import { RandomItems } from '../helpers/HelperArray'
 
 const {height} = Dimensions.get('window')
 
@@ -29,7 +27,7 @@ export const ZenScroll: React.FC = () : JSX.Element => {
           value : ZenItemType, index : number) => merged.push(value)    
         )
         setData(merged)
-        setRandomData(randomItems(merged))
+        setRandomData(RandomItems(merged, merged.length / 2))
         loadData = true
       }))()
     }   
@@ -52,9 +50,9 @@ export const ZenScroll: React.FC = () : JSX.Element => {
     <GestureHandlerRootView style={{flex: 1}}>
       <StatusBar hidden />
       <AnimatedScrollView
-        scrollEventThrottle={32}
+        scrollEventThrottle={8}
         snapToInterval={height}
-        decelerationRate="normal"
+        decelerationRate="fast"
         onScroll={onScroll}>
         <ZenViewItems 
           y={y}
