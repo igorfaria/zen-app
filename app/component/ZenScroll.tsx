@@ -29,7 +29,7 @@ export const ZenScroll: React.FC = () : JSX.Element => {
           value : ZenItemType, index : number) => merged.push(value)    
         )
         setData(merged)
-        setRandomData(randomItems(merged, merged.length / 2))
+        setRandomData(randomItems(merged))
         loadData = true
       }))()
     }   
@@ -52,10 +52,9 @@ export const ZenScroll: React.FC = () : JSX.Element => {
     <GestureHandlerRootView style={{flex: 1}}>
       <StatusBar hidden />
       <AnimatedScrollView
-        scrollEventThrottle={16}
+        scrollEventThrottle={32}
         snapToInterval={height}
-        decelerationRate="fast"
-        style={{backgroundColor: 'black'}}
+        decelerationRate="normal"
         onScroll={onScroll}>
         <ZenViewItems 
           y={y}
