@@ -24,7 +24,6 @@ export const ZenImage = (props: any) : JSX.Element => {
                 configs.source.uri,
                 configs?.cacheKey ?? configs.source.uri,
             ).then(file => {
-                console.log(file)
                 if(file) setSourceUri(file)
             })            
         }
