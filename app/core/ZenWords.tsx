@@ -26,5 +26,5 @@ export const ZenWords : Function = (word : string, key : string = '', styleWrap:
           wrappedWord = <Text {...props}>{word}</Text>
         break
       }
-    return <>wrappedWord</>
+    return <>{wrappedWord}</>
 }
