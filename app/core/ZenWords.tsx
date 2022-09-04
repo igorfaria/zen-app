@@ -5,7 +5,7 @@ import { UniqueKey } from '../helpers/UniqueKey'
 export const ZenWords : Function = (word : string, key : string = '', styleWrap: any = {}) : JSX.Element => {
     if(key.length == 0) key = UniqueKey()
     word = `${word} ` 
-    let wrappedWord : JSX.Element | string = word
+    let wrappedWord : JSX.Element | string = <Text key={key}>{word}</Text>
     switch(word.replace(/[\s\,\.]/, '')) {
         case 'you': case 'love': 
         case 'believe': case 'heart':
@@ -20,13 +20,11 @@ export const ZenWords : Function = (word : string, key : string = '', styleWrap:
         case 'secret': case 'work': 
         case 'heal': case 'time': case 'health':
         case 'mind': case 'action': case 'information' : 
-        case 'wise': 
+        case 'wise': case 'good':
+        case 'decision': case 'decisions': 
           const props : object = {style: styleWrap, key: key}
           wrappedWord = <Text {...props}>{word}</Text>
         break
-        default: 
-            wrappedWord = <>word</>
-        break
       }
-    return wrappedWord
+    return <>wrappedWord</>
 }
