@@ -14,12 +14,12 @@ export const ArrayShuffle : Function = (items : object[]) : object[] => {
 export  const ArrayRandomize : Function = (items : object[]) => {
     const usedIndex : number[] = []
     const randomItems : object[] = []
-    for(let i = 0; i < items.length; i++){
-       const randomIndex : number = NumberRandom(0, items.length)
+    while(randomItems.length != items.length){
+       const randomIndex : number = NumberRandom(0, items.length-1)
        if(randomIndex in usedIndex) continue
        usedIndex.push(randomIndex)
        const randomItem : object = items[randomIndex]
-       randomItems.push(randomItem)
+       if(typeof randomItem != 'undefined') randomItems.push(randomItem)
     }
     return randomItems
 }

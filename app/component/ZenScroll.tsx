@@ -1,4 +1,4 @@
-import { Dimensions, StatusBar, ImageBackground } from 'react-native'
+import { Dimensions, StatusBar, ImageBackground, Image } from 'react-native'
 import React from 'react'
 import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler'
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated'
@@ -7,7 +7,9 @@ import { useFonts } from 'expo-font'
 
 import { ZenItems, ZenItemType, ZenItemsType } from '../core/ZenItems'
 import { ZenViewItems } from './ZenViewItems'
-import { RandomItems } from '../helpers/HelperArray'
+import { ZenSplash } from './ZenSplash'
+
+import Toast from 'react-native-root-toast' 
 
 const {width, height} = Dimensions.get('window')
 
@@ -19,31 +21,67 @@ export const ZenScroll: React.FC = () : JSX.Element => {
 
   const [data, setData] = React.useState<ZenItemType[]>([])
   const [randomData, setRandomData] = React.useState<ZenItemType[]>([])
+  const [startIndex, setStartIndex] = React.useState<number>(0)
   const y = useSharedValue(0)
+  let prefecthedImages = 0
+  const prefecthed : Function = (url : string) : void => {
+    prefecthedImages++
+  }
 
   React.useEffect(() => {
-    if(!loadData) {
-      (async () => await ZenItems().then((items : ZenItemsType) : void => {
-        const merged : ZenItemType[] = [...data]
-        items._forEach((
-          value : ZenItemType, index : number) => merged.push(value)    
-        )
-        setData(merged)
-        setRandomData(RandomItems(merged, merged.length))
-        loadData = true
-      }))()
-    }   
-  }, [data])
+      const total : number = randomData.length
+      if(total < 200) {
+        (async () => await ZenItems(50, total + 1).then((items : ZenItemsType) : void => {
+
+          let merged : ZenItemType[] = []
+          items._forEach((
+            value : ZenItemType, index : number) => {
+              Image.prefetch(value.image).then(status => {
+                const res : string = status ? 'OK' : 'NOPE'
+                prefecthed(`${res}: ${value.image}`)
+              })
+              return merged.push(value)
+            }    
+          )
+
+          merged = [...randomData, ...merged]
+          const uniqueQuotes : any[] = [];
+          merged = merged.filter((item : ZenItemType) => {
+            const isDuplicate = uniqueQuotes.includes(item.quote)
+            if (!isDuplicate) {
+              uniqueQuotes.push(item.quote)
+              return true
+            }
+            return false
+          })
+          
+          const initial : boolean = randomData.length == 0
+          let secondsTimeout : number = initial ? 15 : 25
+          let toastMessage : string = initial ? '' : `New quotes added (${merged.length})` 
+
+          if(toastMessage.length) {
+            Toast.show(toastMessage)
+          }
+
+          setTimeout(() => {
+            setRandomData(merged)
+          }, secondsTimeout * 1000)
+          
+        }))()   
+      }
+  }, [randomData])
+
 
   //const [clonedIndex, setClonedIndex] = React.useState<number[]>([])
-
   const onHidden : Function = (index : number) : void => {
       'worklet'
-      /* if(index in clonedIndex) return
+      /* 
+      if(index in clonedIndex) return
       const hiddenItem = data[index]
       setClonedIndex([...clonedIndex, index])
       let mergedList : ZenItemType[] = [...data, hiddenItem]
-      setData(mergedList) */
+      setData(mergedList) 
+      */
   }
 
   const onScroll = useAnimatedScrollHandler( event => y.value = event.contentOffset.y )
@@ -61,7 +99,11 @@ export const ZenScroll: React.FC = () : JSX.Element => {
   const customWrapperFontStyle : object = {...customFontStyle, fontFamily: fontsLoaded ? wrapperFont : 'sans-serif'}
   const customFontValues : object = {quote: customFontStyle, wrapper: customWrapperFontStyle}
 
+  /* onScroll={onScroll} */
   return (
+    randomData.length == 0 || !fontsLoaded
+    ? <ZenSplash />
+    : (
     <GestureHandlerRootView style={{flex: 1}}>
 
       <ImageBackground 
@@ -81,7 +123,7 @@ export const ZenScroll: React.FC = () : JSX.Element => {
         scrollEventThrottle={1}
         snapToInterval={height}
         decelerationRate="normal"
-        onScroll={onScroll}>
+        >
         <ZenViewItems 
           y={y}
           height={randomData.length * height}
@@ -91,5 +133,6 @@ export const ZenScroll: React.FC = () : JSX.Element => {
         />
       </AnimatedScrollView>
     </GestureHandlerRootView>
+    )
   )
 }

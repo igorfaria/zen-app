@@ -1,13 +1,15 @@
 import axios from 'axios'
 import { quotesJSON } from './tmp/quotes'
+import { ArrayRandomize } from '../helpers/HelperArray'
 
-export const ZenQuotes : Function = async () : Promise<object[] | undefined> =>{
+export const ZenQuotes : Function = async (quantity : number = 30, start : number = 0) : Promise<object[] | undefined> =>{
     try {
-/*         const ZEN_URL = 'https://zenquotes.io/api/quotes/'
+/*      const ZEN_URL = 'https://zenquotes.io/api/quotes/'
         const proxy = 'https://cors-anywhere.herokuapp.com/'
         const response = await axios.get(proxy + ZEN_URL)
         return response.data */
-        return await quotesJSON
+        const sliced : any[] = quotesJSON.slice(start, start + quantity)
+        return await ArrayRandomize(sliced)
       }catch (error) {
         console.log(error) // catches both errors
       }
