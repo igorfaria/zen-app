@@ -1,6 +1,5 @@
 import { ZenQuotes } from './ZenQuotes'
 import { ZenImages } from './ZenImages'
-import { ArrayRandomize } from '../helpers/HelperArray'
 
 export interface ZenItemType  {
     id: number
@@ -25,7 +24,7 @@ export const ZenItems = async (quantity : number = 30, start : number = 0) : Pro
                 if(typeof images === 'undefined') return
                 images.forEach((image : any) => {
                     const item : any = data[dataIndex] || false
-                    let quote : string | false = (item && 'q'in item) ? item.q : false
+                    let quote : string = (item && 'q'in item) ? item.q : ''
                     const url : string | false = image?.download_url ?? false
 
                     if(quote && quote.length > 0 && url){

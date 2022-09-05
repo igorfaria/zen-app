@@ -8,8 +8,9 @@ import { useFonts } from 'expo-font'
 import { ZenItems, ZenItemType, ZenItemsType } from '../core/ZenItems'
 import { ZenViewItems } from './ZenViewItems'
 import { ZenSplash } from './ZenSplash'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import Toast from 'react-native-root-toast' 
+
 
 const {width, height} = Dimensions.get('window')
 
@@ -19,33 +20,64 @@ const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView)
 
 export const ZenScroll: React.FC = () : JSX.Element => {
 
-  const [data, setData] = React.useState<ZenItemType[]>([])
   const [randomData, setRandomData] = React.useState<ZenItemType[]>([])
-  const [startIndex, setStartIndex] = React.useState<number>(0)
-  const y = useSharedValue(0)
-  let prefecthedImages = 0
-  const prefecthed : Function = (url : string) : void => {
-    prefecthedImages++
+
+  const getZenWords : Function = async () : Promise<[] | []> => {
+    try {
+      const zenWords = await AsyncStorage.getItem('_zenWords')
+      if(typeof zenWords == 'string') {
+        const json = JSON.parse(zenWords)
+        return (json && json.length) ? json : []
+      }
+    } catch(e) {
+      // fail :(
+    }
+    return []
   }
+  
+  const setZenWord : Function = async (word : string, remove : boolean = false) : Promise<boolean> => {
+      
+      if(word.length == 0) return false
+      const zenWords = await getZenWords()
+      if(typeof zenWords != 'object') return false
+  
+      word = word.replace(/[\s\,\.]/, '').toLowerCase() 
+  
+      console.log('remove', remove)
+
+      const zenIndex = zenWords.indexOf(word)
+      if(remove){
+        if(zenIndex !== -1) zenWords.splice(zenIndex, 1)
+      } else {
+        if(!zenWords.includes(word)) {
+          zenWords.push(word)
+        }
+      }
+      setZWords(zenWords)
+      await AsyncStorage.setItem('_zenWords', JSON.stringify(zenWords))
+      return true
+  }
+  const [zWords, setZWords] = React.useState<string[]>([])
+  
+  const y = useSharedValue(0)
 
   React.useEffect(() => {
       const total : number = randomData.length
-      if(total < 200) {
-        (async () => await ZenItems(50, total + 1).then((items : ZenItemsType) : void => {
+
+      if(total < 50) {
+
+        (async () => await ZenItems(10, total).then((items : ZenItemsType) : void => {
 
           let merged : ZenItemType[] = []
           items._forEach((
             value : ZenItemType, index : number) => {
-              Image.prefetch(value.image).then(status => {
-                const res : string = status ? 'OK' : 'NOPE'
-                prefecthed(`${res}: ${value.image}`)
-              })
+              Image.prefetch(value.image)
               return merged.push(value)
             }    
           )
 
           merged = [...randomData, ...merged]
-          const uniqueQuotes : any[] = [];
+          const uniqueQuotes : any[] = []
           merged = merged.filter((item : ZenItemType) => {
             const isDuplicate = uniqueQuotes.includes(item.quote)
             if (!isDuplicate) {
@@ -56,12 +88,7 @@ export const ZenScroll: React.FC = () : JSX.Element => {
           })
           
           const initial : boolean = randomData.length == 0
-          let secondsTimeout : number = initial ? 15 : 25
-          let toastMessage : string = initial ? '' : `New quotes added (${merged.length})` 
-
-          if(toastMessage.length) {
-            Toast.show(toastMessage)
-          }
+          let secondsTimeout : number = initial ? 5 : 15
 
           setTimeout(() => {
             setRandomData(merged)
@@ -69,20 +96,13 @@ export const ZenScroll: React.FC = () : JSX.Element => {
           
         }))()   
       }
+
+      (async () => {
+          const zw = await getZenWords()
+          setZWords(zw) 
+      })()
+
   }, [randomData])
-
-
-  //const [clonedIndex, setClonedIndex] = React.useState<number[]>([])
-  const onHidden : Function = (index : number) : void => {
-      'worklet'
-      /* 
-      if(index in clonedIndex) return
-      const hiddenItem = data[index]
-      setClonedIndex([...clonedIndex, index])
-      let mergedList : ZenItemType[] = [...data, hiddenItem]
-      setData(mergedList) 
-      */
-  }
 
   const onScroll = useAnimatedScrollHandler( event => y.value = event.contentOffset.y )
 
@@ -95,11 +115,10 @@ export const ZenScroll: React.FC = () : JSX.Element => {
   const quoteFont : string = 'Montserrat-Light'
   const wrapperFont : string = 'Montserrat-Regular'
 
-  const customFontStyle : object = { paddingHorizontal: 5, fontFamily: fontsLoaded ? quoteFont : 'sans-serif' }
+  const customFontStyle : object = { fontFamily: fontsLoaded ? quoteFont : 'sans-serif' }
   const customWrapperFontStyle : object = {...customFontStyle, fontFamily: fontsLoaded ? wrapperFont : 'sans-serif'}
   const customFontValues : object = {quote: customFontStyle, wrapper: customWrapperFontStyle}
 
-  /* onScroll={onScroll} */
   return (
     randomData.length == 0 || !fontsLoaded
     ? <ZenSplash />
@@ -128,8 +147,9 @@ export const ZenScroll: React.FC = () : JSX.Element => {
           y={y}
           height={randomData.length * height}
           data={randomData}
-          onHidden={onHidden}
           customFontStyle={ customFontValues }
+          setZWords={setZenWord}
+          zWords={zWords}
         />
       </AnimatedScrollView>
     </GestureHandlerRootView>

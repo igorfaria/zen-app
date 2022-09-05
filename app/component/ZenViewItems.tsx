@@ -5,14 +5,12 @@ import { ZenItemType } from '../core/ZenItems'
 
 export const ZenViewItems = (props: any) : JSX.Element => {
 
-    const {data, height, onHidden, y, customFontStyle} = props
+    const {data, height, y, customFontStyle, zWords, setZWords} = props
 
-    const zenItemProps : object = {
-      onHidden,
-      y,
-      customFontStyle,
-    }
-   
+    console.log(zWords)
+
+    const zenItemProps : object = { y, customFontStyle, zWords, setZWords }
+    
     return (
     <Animated.View style={{
         height: height

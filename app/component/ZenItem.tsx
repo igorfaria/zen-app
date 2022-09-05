@@ -1,11 +1,12 @@
-import { StyleSheet, Dimensions, Text, View,  } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Dimensions, Text, View, TouchableOpacity,  } from 'react-native'
+import React from 'react'
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming, ZoomIn } from 'react-native-reanimated'
 import {Gesture, GestureDetector} from 'react-native-gesture-handler'
 
 import { ZenItemType } from '../core/ZenItems'
 import { ZenImage } from '../component/ZenImage'
 import { WordWrapper } from '../helpers/WordWrapper'
+import { randomKey } from '../helpers/UniqueKey'
 
 const {height, width} = Dimensions.get('window')
 
@@ -23,9 +24,9 @@ const ZenItem : Function = (props: any) : JSX.Element => {
 
   const y : any = props.y 
   const index : number = props.index
-  const onHidden : Function = props?.onHidden ?? (() => null)
-  const itemStyle : object = props?.styke ?? {} 
+  const itemStyle : object = props?.style ?? {} 
   const customFontStyle : any = props?.customFontStyle ?? {quote: {}, wrapper: {fontWeight: '600'}}
+  const {zWords, setZWords} = props
  
   const touchStart = useSharedValue({x: 0, y: 0, time: 0})
   const rotateX = useSharedValue(0)
@@ -93,19 +94,25 @@ const ZenItem : Function = (props: any) : JSX.Element => {
   })
 
   return (
-    <GestureDetector gesture={gesture}>
+    !item 
+    ? <></>
+    : <GestureDetector gesture={gesture}>
       <Animated.View style={rStyle()}>
         <ZenImage 
           source={ { uri: item.image , cache: 'only-if-cached'} } style={styles.image} />
           <View style={ styles.quoteContainer }>
-              <Text style={ styles.quote }>
-                  {WordWrapper(item.quote, customFontStyle)}
-              </Text>
+              <TouchableOpacity style={ styles.quote }>
+                  <WordWrapper 
+                    zWords={zWords}
+                    setZWords={setZWords}
+                    words={item.quote} 
+                    style={customFontStyle} />
+                    {item?.author ? (<Text style={{...customFontStyle.quote, ...styles.author}}>{item.author}</Text>) : (<></>)}
+              </TouchableOpacity>
           </View>
       </Animated.View>
     </GestureDetector>
   )
-  
 }
 
 const styles = StyleSheet.create({
@@ -122,16 +129,14 @@ const styles = StyleSheet.create({
   },
   quote: {
     backgroundColor: 'rgba(255,255,255,.4)',
-    color: 'black',
-    fontWeight: '300',
-    fontSize: 32,
-    padding: 30,
+    paddingVertical: 30,
+    paddingHorizontal: 25,
     width: '100%',
     maxWidth: '90%',
     elevation: 1,
     textAlign: 'center',
-    flexDirection: 'row',
-    zIndex: 2
+    flexDirection: 'column',
+    zIndex: 2,
   },
   quoteContainer: {
     backgroundColor: 'rgba(0, 0, 0,.25)',
@@ -142,7 +147,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  author: {
+    alignSelf: 'center',
+    fontSize: 16,
+    color: 'rgba(255,255,255,.6)',
+    marginTop: 15,
+    padding: 4,
+  
   }
 })
 

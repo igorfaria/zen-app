@@ -16,7 +16,7 @@ export const ZenSplash : Function = () : JSX.Element => {
         if(repeat) setTimeout(bounce, 1234)
     }
 
-    setTimeout(bounce, 5678)
+    setTimeout(() => bounce(true), 3354)
 
     const style = useAnimatedStyle(() => {
         return {
@@ -49,6 +49,7 @@ export const ZenSplash : Function = () : JSX.Element => {
                     {
                         fontSize: 16,
                         marginVertical: 40,
+                        color: 'gray',
                     }
                 }>Exercise your patiance :P</Text>
                 <Text style={
