@@ -1,12 +1,12 @@
-import { StyleSheet, Dimensions, Text, View, TouchableOpacity,  } from 'react-native'
-import React from 'react'
+import { StyleSheet, Dimensions, Text, View, TouchableOpacity } from 'react-native'
+import React, { memo } from 'react'
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming, ZoomIn } from 'react-native-reanimated'
 import {Gesture, GestureDetector} from 'react-native-gesture-handler'
 
 import { ZenItemType } from '../core/ZenItems'
-import { ZenImage } from '../component/ZenImage'
+import ZenImage from '../component/ZenImage'
 import { WordWrapper } from '../helpers/WordWrapper'
-import { randomKey } from '../helpers/UniqueKey'
+import { ZC } from '../core/ZenContext'
 
 const {height, width} = Dimensions.get('window')
 
@@ -20,13 +20,13 @@ const FADE_NEXT : number = 1 // it must be different than FADE_HIDDEN
 
 const ZenItem : Function = (props: any) : JSX.Element => {
 
+  const { customFontStyle } : any = React.useContext(ZC)
+
   const item : ZenItemType = props?.item ?? false
 
   const y : any = props.y 
   const index : number = props.index
   const itemStyle : object = props?.style ?? {} 
-  const customFontStyle : any = props?.customFontStyle ?? {quote: {}, wrapper: {fontWeight: '600'}}
-  const {zWords, setZWords} = props
  
   const touchStart = useSharedValue({x: 0, y: 0, time: 0})
   const rotateX = useSharedValue(0)
@@ -101,14 +101,12 @@ const ZenItem : Function = (props: any) : JSX.Element => {
         <ZenImage 
           source={ { uri: item.image , cache: 'only-if-cached'} } style={styles.image} />
           <View style={ styles.quoteContainer }>
-              <TouchableOpacity style={ styles.quote }>
+              <View style={ styles.quote }>
                   <WordWrapper 
-                    zWords={zWords}
-                    setZWords={setZWords}
                     words={item.quote} 
                     style={customFontStyle} />
-                    {item?.author ? (<Text style={{...customFontStyle.quote, ...styles.author}}>{item.author}</Text>) : (<></>)}
-              </TouchableOpacity>
+                    {item?.author ? (<Text style={{...customFontStyle?.quote, ...styles.author}}>{item.author}</Text>) : (<></>)}
+              </View>
           </View>
       </Animated.View>
     </GestureDetector>
@@ -159,4 +157,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ZenItem
+export default memo<any>(ZenItem)

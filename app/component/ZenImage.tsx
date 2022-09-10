@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, memo, useEffect } from 'react'
 import { Image } from 'react-native'
 import { ZenCache } from '../core/ZenCache'
 import md5 from 'md5'
@@ -10,7 +10,7 @@ export interface ZenImageType {
     style?: object,
 }
 
-export const ZenImage = (props: any) : JSX.Element => {
+const ZenImage = (props: any) : JSX.Element => {
 
     const [sourceUri, setSourceUri] = useState<string>('')
     
@@ -19,6 +19,7 @@ export const ZenImage = (props: any) : JSX.Element => {
         cacheKey: props?.cacheKey ?? md5(JSON.stringify(props)),
         style: props?.style ?? {},
     }
+
     useEffect(()=>{
         if(configs?.source?.uri ?? false){
             ZenCache(
@@ -31,7 +32,11 @@ export const ZenImage = (props: any) : JSX.Element => {
             })            
         }
     }, [])
-    
+
+    if(sourceUri.length > 0){
+        configs.source.uri = sourceUri
+    }
+
     return (
         sourceUri 
         ? <Image {...configs} style={ configs.style } />
@@ -40,6 +45,4 @@ export const ZenImage = (props: any) : JSX.Element => {
     )
 }
 
-/* <View style={{ ...configs.style }} >
-        <ActivityIndicator size={33} />
-      </View> */
+export default memo<any>(ZenImage)

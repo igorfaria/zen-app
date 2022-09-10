@@ -1,15 +1,14 @@
-import React from 'react'
+import React, { memo, useContext } from 'react'
 import ZenItem from './ZenItem'
 import Animated from 'react-native-reanimated'
 import { ZenItemType } from '../core/ZenItems'
+import { ZC } from '../core/ZenContext'
 
-export const ZenViewItems = (props: any) : JSX.Element => {
+const ZenViewItems = (props: any) : JSX.Element => {
 
-    const {data, height, y, customFontStyle, zWords, setZWords} = props
-
-    console.log(zWords)
-
-    const zenItemProps : object = { y, customFontStyle, zWords, setZWords }
+    const { data, height, y } = props
+    const { customFontStyle } : any = React.useContext(ZC) 
+    const zenItemProps : object = { y, customFontStyle }
     
     return (
     <Animated.View style={{
@@ -26,3 +25,5 @@ export const ZenViewItems = (props: any) : JSX.Element => {
       </Animated.View>
     )
 }
+
+export default memo<any>(ZenViewItems)

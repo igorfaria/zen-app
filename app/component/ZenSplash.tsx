@@ -1,22 +1,34 @@
-import React from 'react'
-import { View, Image, Text, TouchableOpacity } from 'react-native'
+import React, { memo } from 'react'
+import { View, Text, TouchableWithoutFeedback } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
 
-export const ZenSplash : Function = () : JSX.Element => {
+const ZenSplash : Function = () : JSX.Element => {
 
     const maxWidth : number = 250
-    const minWidth : number = 235
-    const randomNumber = useSharedValue(maxWidth);
+    const minWidth : number = 200
+    const randomNumber = useSharedValue(maxWidth * .9);
 
+    let value : number = minWidth
+    let setInt : any = null  
+    let growing = true
     const bounce : Function = (repeat : boolean = false) : void => {
-        let value : number = (0.123 + Math.random()) * maxWidth
-        if(value < minWidth) value = minWidth
-        if(value > maxWidth) value = maxWidth
+//        let value : number = Math.abs((0.123 + Math.random()) * maxWidth)
+        //if(value < minWidth) value = minWidth
+        //if(value > maxWidth) value = maxWidth
+        value = growing ? value * 1.05 : value * 0.97
         randomNumber.value = Math.round(value)
-        if(repeat) setTimeout(bounce, 1234)
+        if(repeat) {
+            if(value > maxWidth) {
+                //clearTimeout(setInt)
+                growing = false
+            } else if (value < minWidth){ 
+                growing = true
+            }
+            setInt = setTimeout(() => bounce(true), 1253)
+        }
     }
 
-    setTimeout(() => bounce(true), 3354)
+    setTimeout(() => bounce(true), 1251)
 
     const style = useAnimatedStyle(() => {
         return {
@@ -37,13 +49,13 @@ export const ZenSplash : Function = () : JSX.Element => {
                     backgroundColor: 'rgba(0, 0, 0, .7)',
                 }}>
             
-                <TouchableOpacity 
+                <TouchableWithoutFeedback 
                     style={ {  width: '100%', alignItems: 'center'} }
-                    onPress={() => bounce(true)}>        
+                    onPress={() => bounce()}>        
                     <Animated.Image source={ icon } 
                         resizeMode='contain'
                         style={style} />  
-                </TouchableOpacity>
+                </TouchableWithoutFeedback>
 
                 <Text style={
                     {
@@ -60,3 +72,5 @@ export const ZenSplash : Function = () : JSX.Element => {
         </View>
     )
 }
+
+export default memo<any>(ZenSplash)

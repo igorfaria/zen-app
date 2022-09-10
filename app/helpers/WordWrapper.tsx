@@ -1,7 +1,8 @@
 import React from 'react'
 import { View } from 'react-native'
 import { randomKey } from './UniqueKey'
-import { ZenWords } from '../core/ZenWords'
+import ZenWords from '../core/ZenWords'
+import { ZC } from '../core/ZenContext'
 
 interface WrapperStyle {
     wrapper: object
@@ -10,9 +11,9 @@ interface WrapperStyle {
 
 export const WordWrapper : Function = ( props : any ) : JSX.Element => { 
     
+    const { customFontStyle } : any = React.useContext(ZC)
+
     const words : string = props?.words ?? ''
-    const style : WrapperStyle = props?.style ?? {quote: {}, wrapper: {fontWeight: 600}}
-    const {zWords, setZWords} = props
 
     const spllitedWords = (typeof words === 'string') ? words.split(' ') : undefined 
     const undefinedElement = <></>
@@ -22,10 +23,8 @@ export const WordWrapper : Function = ( props : any ) : JSX.Element => {
     return (
         <View key={randomKey()}>
             <ZenWords
-                zWords={zWords}
-                setZWords={setZWords} 
                 words={spllitedWords}
-                styleWrap={style}
+                styleWrap={customFontStyle}
                 />
         </View>
     )

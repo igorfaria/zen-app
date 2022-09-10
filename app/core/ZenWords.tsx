@@ -1,59 +1,46 @@
-import React from 'react'
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import React, { memo } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-root-toast'
 import { randomKey } from '../helpers/UniqueKey'
+import { ZC } from './ZenContext'
 
 
-export const ZenWords : Function = ( props : any ) : JSX.Element => {
+const ZenWords : Function = ( props : any ) : JSX.Element => {
+
+    const {zenWords, setZenWord} : any = React.useContext(ZC)
 
     const words : string[] = props?.words ?? []
     const styleWrap : any = props?.styleWrap ?? {quote: {}, wrapper: {}}
-    const {zWords, setZWords} = props
     
     const createElement : Function = (word : string) : JSX.Element => {
       const [bold, setBold] = React.useState(0)
-      
       const normalizedWord : string = word.toLowerCase().replace(/[\s\,\.]/, '')
-      const aBold = (bold || zWords.includes(normalizedWord))
+      const aBold = (bold || zenWords.includes(normalizedWord))
 
       const handlePress : Function = (word : string) => {
-        const action : string = (!bold ? 'Adding' : 'Removing') + ` ${word}`
-        Toast.show(`${action}`, {
-          animation: true,
-        })
-        setZWords(word, aBold ? true : false)
-        setBold(aBold?0:1)
+        const action : string = (!aBold ? 'Adding' : 'Removing') + ` ${word}`
+        console.log(action)
+        Toast.show(`${action}`, { animation: true })
+        setZenWord(word, aBold ? true : false)
+        setBold(aBold?1:0)
       }     
  
-      return (
+      return ( 
         <TouchableOpacity 
-          onPress={() => handlePress(word)} 
-          key={randomKey()} >
-          <Text style={ [styles.quote, (aBold ? styleWrap.wrapper : styleWrap.quote)] } 
-            onPress={() => handlePress(word)}>{word} </Text>
-        </TouchableOpacity>
-      )
+          key={randomKey()} 
+          onPress={() => handlePress(word)}
+          >
+          <Text 
+            style={ [styles.quote, (aBold ? styleWrap.wrapper : styleWrap.quote)] } >
+              {word} 
+          </Text>
+        </TouchableOpacity>)
     }
 
     const initialElement : JSX.Element[] = words.map( (word : string) => createElement(word) )
-     let wrappedWord : JSX.Element[] = initialElement
+    let wrappedWord : JSX.Element[] = initialElement
 
-
-    /*const checkWord: Function =  (word : ) : Promise<JSX.Element> => {
-        const zenWords : string[] = []
-        if(zenWords && word.replace(/[\s\,\.]/, '') in zenWords){
-            const props : object = {style: bold ? styleWrap : {}}
-            return (<Text {...props}>{word}</Text>)
-        }
-        return initialElement
-    }*/
-
-    return <TouchableOpacity 
-        key={randomKey()}
-        style={ styles.container }
-        >
-          {wrappedWord}
-      </TouchableOpacity>
+    return <View key={randomKey()} style={styles.container}>{wrappedWord}</View>
 }
 
 const styles = StyleSheet.create({
@@ -69,5 +56,8 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '300',
     fontSize: 32,
+    marginRight: 5,
   }
 })
+
+export default memo<any>(ZenWords)

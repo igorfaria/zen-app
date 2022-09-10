@@ -1,6 +1,6 @@
 import React from 'react'
 import { StatusBar, StyleSheet, Text, View } from 'react-native'
-import { ZenScroll } from './component/ZenScroll'
+import ZenScroll from './component/ZenScroll'
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 export const AppZen: React.FC = () : JSX.Element => {
