@@ -27,7 +27,7 @@ const ZenItems = (quantity : number = 30, start : number = 0) : object[] => {
         let quote : string = (item && 'q'in item) ? item.q : ''
 
         //const url : string | false = image?.download_url ?? false
-        const url : string = `https://picsum.photos/id/${image.id}/${width}/${height}`
+        const url : string = `https://picsum.photos/id/${image.id}/${width}/${height}/`
         if(quote && quote.length > 0 && url){
             const author : string = item.a ?? 'Unkown' 
             if(quote.slice(-1) == '.'){
@@ -46,21 +46,6 @@ const ZenItems = (quantity : number = 30, start : number = 0) : object[] => {
     })
 }
 
-    return zenQuotes
-
-    const zenReturn : object = {
-        _forEach: (fHandler : Function) : boolean => {
-            try {
-                Object.entries(zenQuotes).forEach(function ([key, value], index) {
-                    fHandler(value, index)
-                })
-                return true
-            } catch(e) {
-                return false
-            }
-        },
-        items: zenQuotes
-    }
     return zenQuotes
 }
 

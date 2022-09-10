@@ -7,10 +7,10 @@ import { ZC } from './ZenContext'
 
 const ZenWords : Function = ( props : any ) : JSX.Element => {
 
-    const {zenWords, setZenWord} : any = React.useContext(ZC)
-
+    const {zenWords, setZenWord, customFontValues} : any = React.useContext(ZC)
+    
     const words : string[] = props?.words ?? []
-    const styleWrap : any = props?.styleWrap ?? {quote: {}, wrapper: {}}
+    const styleWrap : any = customFontValues ? customFontValues : {quote: {}, wrapper: {}}
     
     const createElement : Function = (word : string) : JSX.Element => {
       const [bold, setBold] = React.useState(0)
@@ -18,7 +18,7 @@ const ZenWords : Function = ( props : any ) : JSX.Element => {
       const aBold = (bold || zenWords.includes(normalizedWord))
 
       const handlePress : Function = (word : string) => {
-        const action : string = (!aBold ? 'Adding' : 'Removing') + ` ${word}`
+        const action : string = (!aBold ? 'Adding' : 'Removing') + ` "${word}"`
         console.log(action)
         Toast.show(`${action}`, { animation: true })
         setZenWord(word, aBold ? true : false)
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '300',
     fontSize: 32,
-    marginRight: 5,
+    marginRight: 8,
   }
 })
 

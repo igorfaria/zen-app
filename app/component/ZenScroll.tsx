@@ -56,10 +56,10 @@ const ZenScroll : React.FC = () : JSX.Element => {
         const total = quotes.length 
         if(total < MAX_ITEMS){
             let items : ZenItemType[] = [] 
-            ZenItems(30, total).forEach( (item : any) => {
+            ZenItems(251, total).forEach( (item : any) => {
                if(!quotes.includes(item)) items.push(item)
             })
-            setTimeout( () => setQuotes([...quotes, ...items]), 5000)            
+            setTimeout( () => setQuotes([...quotes, ...items]), total ? 5000 : 1)            
         }
     }, [quotes])
 

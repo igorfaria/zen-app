@@ -1,5 +1,5 @@
 import React, { useState, memo, useEffect } from 'react'
-import { Image } from 'react-native'
+import { View, Image } from 'react-native'
 import { ZenCache } from '../core/ZenCache'
 import md5 from 'md5'
 
@@ -39,7 +39,18 @@ const ZenImage = (props: any) : JSX.Element => {
 
     return (
         sourceUri 
-        ? <Image {...configs} style={ configs.style } />
+        ? ( 
+        <>
+        <Image {...configs} style={ configs.style } resizeMode={'cover'} />
+        <View style={
+           { 
+            position: 'absolute',
+            top: 0, left: 0, bottom: 0, right: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        } 
+        }></View>
+        </>
+        )
         : <></>
 
     )

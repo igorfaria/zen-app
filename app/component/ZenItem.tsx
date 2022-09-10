@@ -103,8 +103,7 @@ const ZenItem : Function = (props: any) : JSX.Element => {
           <View style={ styles.quoteContainer }>
               <View style={ styles.quote }>
                   <WordWrapper 
-                    words={item.quote} 
-                    style={customFontStyle} />
+                    words={item.quote}  />
                     {item?.author ? (<Text style={{...customFontStyle?.quote, ...styles.author}}>{item.author}</Text>) : (<></>)}
               </View>
           </View>
