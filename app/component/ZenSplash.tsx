@@ -4,8 +4,8 @@ import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-na
 
 const ZenSplash : Function = () : JSX.Element => {
 
-    const maxWidth : number = 250
-    const minWidth : number = 200
+    const maxWidth : number = 280
+    const minWidth : number = 240
     const randomNumber = useSharedValue(maxWidth * .9);
 
     let value : number = minWidth
@@ -39,7 +39,7 @@ const ZenSplash : Function = () : JSX.Element => {
         };
     })
 
-    const icon : any = require('../assets/icon/icon.png')
+    const icon : any = require('../assets/icon/adaptive-icon.png')
     return (
         <View style={
                 {

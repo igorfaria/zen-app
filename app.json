@@ -15,7 +15,7 @@
     "slug": "zenApp",
     "icon": "./app/assets/icon/icon.png",
     "splash": {
-      "image": "./app/assets/icon/android/splash.png",
+      "image": "./app/assets/icon/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#333333"
     },
