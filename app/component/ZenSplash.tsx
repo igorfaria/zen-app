@@ -39,14 +39,14 @@ const ZenSplash : Function = () : JSX.Element => {
         };
     })
 
-    const icon : any = require('../assets/icon/android/play_store_512.png')
+    const icon : any = require('../assets/icon/icon.png')
     return (
         <View style={
                 {
                     flex: 1, 
                     alignItems: 'center', 
                     justifyContent: 'center', 
-                    backgroundColor: '#525252',
+                    backgroundColor: '#333333',
                 }}>
             
                 <TouchableWithoutFeedback 

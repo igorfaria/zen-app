@@ -3,18 +3,6 @@
   "description": "Just some zen quotes and random images as background",
   "slug": "zenApp",
   "version": "1.0.2",
-  "icon": "./app/app/assets/icon/androi/res/mipmap-xxxhdpi/ic_launcher.png",
-  "splash": {
-    "image": "./app/assets/icon/android/play_store_512.png",
-    "resizeMode": "contain",
-    "backgroundColor": "#525252"
-  },
-  "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./app/app/assets/icon/androi/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
-        "backgroundColor": "#525252"
-      }
-  },
   "privacy": "public",
   "orientation": "portrait",
   "extra": {
@@ -25,8 +13,18 @@
   "expo": {
     "name": "Zen App",
     "slug": "zenApp",
+    "icon": "./app/assets/icon/icon.png",
+    "splash": {
+      "image": "./app/assets/icon/android/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#333333"
+    },
     "android": {
-      "package": "com.itfaria.zenApp"
+      "package": "com.itfaria.zenApp",
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/icon/adaptive-icon.png",
+        "backgroundColor": "#333333"
+      }
     },
     "extra": {
       "eas": {
