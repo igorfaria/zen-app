@@ -7,8 +7,8 @@ export const ZenImages : Function = /* async */  (quantity : number = 30, start 
 /*      const PICSUM_URL = `https://picsum.photos/v2/list?page=1&limit=${limit}`
         const response = await axios.get(PICSUM_URL);
         return response.data; */
-        const sliced : any[] = imagesJSON.slice(start, start + quantity)
-        return ArrayRandomize(sliced)
+        const sliced : any[] = ArrayRandomize(imagesJSON).slice(start, start + quantity)
+        return sliced
       }catch (error) {
         console.log(error) // catches both errors
       }

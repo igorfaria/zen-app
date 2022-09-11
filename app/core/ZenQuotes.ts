@@ -8,8 +8,8 @@ export const ZenQuotes : Function = /* async */ (quantity : number = 30, start :
         const proxy = 'https://cors-anywhere.herokuapp.com/'
         const response = await axios.get(proxy + ZEN_URL)
         return response.data */
-        const sliced : any[] = quotesJSON.slice(start, start + quantity)
-        return ArrayRandomize(sliced)
+        const sliced : any[] = ArrayRandomize(quotesJSON).slice(start, start + quantity)
+        return sliced
       }catch (error) {
         console.log(error) // catches both errors
       }

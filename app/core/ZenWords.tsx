@@ -1,40 +1,30 @@
 import React, { memo } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import Toast from 'react-native-root-toast'
+import { StyleSheet, Text, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { BoldWords } from '../helpers/BoldWords'
 import { randomKey } from '../helpers/UniqueKey'
 import { ZC } from './ZenContext'
 
 
-const ZenWords : Function = ( props : any ) : JSX.Element => {
+const ZenWords : React.FC = ( props : any ) : JSX.Element => {
 
-    const {zenWords, setZenWord, customFontValues} : any = React.useContext(ZC)
+    const {customFontValues} : any = React.useContext(ZC)
     
     const words : string[] = props?.words ?? []
     const styleWrap : any = customFontValues ? customFontValues : {quote: {}, wrapper: {}}
     
     const createElement : Function = (word : string) : JSX.Element => {
-      const [bold, setBold] = React.useState(0)
-      const normalizedWord : string = word.toLowerCase().replace(/[\s\,\.]/, '')
-      const aBold = (bold || zenWords.includes(normalizedWord))
+      const normalizedWord : string = word.toLowerCase().replace(/[^A-Za-z0-9]/g, '')
+      const aBold = BoldWords.includes(normalizedWord)
 
-      const handlePress : Function = (word : string) => {
-        const action : string = (!aBold ? 'Adding' : 'Removing') + ` "${word}"`
-        console.log(action)
-        Toast.show(`${action}`, { animation: true })
-        setZenWord(word, aBold ? true : false)
-        setBold(aBold?1:0)
-      }     
- 
-      return ( 
-        <TouchableOpacity 
-          key={randomKey()} 
-          onPress={() => handlePress(word)}
-          >
+      return (
+        <TouchableOpacity key={randomKey()} >
           <Text 
             style={ [styles.quote, (aBold ? styleWrap.wrapper : styleWrap.quote)] } >
               {word} 
           </Text>
-        </TouchableOpacity>)
+        </TouchableOpacity>
+      )
     }
 
     const initialElement : JSX.Element[] = words.map( (word : string) => createElement(word) )
@@ -60,4 +50,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default memo<any>(ZenWords)
+export default memo<JSX.Element>(ZenWords)

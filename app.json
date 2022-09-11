@@ -3,16 +3,16 @@
   "description": "Just some zen quotes and random images as background",
   "slug": "zenApp",
   "version": "1.0.2",
-  "icon": "./app/assets/icon/icon.png",
+  "icon": "./app/app/assets/icon/androi/res/mipmap-xxxhdpi/ic_launcher.png",
   "splash": {
-    "image": "./app/assets/icon/ic_ninja-63138ff5b0403/android/mipmap-xhdpi/ic_launcher_foreground.png",
+    "image": "./app/assets/icon/android/play_store_512.png",
     "resizeMode": "contain",
-    "backgroundColor": "#DDDDDD"
+    "backgroundColor": "#525252"
   },
   "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./app/assets/icon/icon.png",
-        "backgroundColor": "#DDDDDD"
+        "foregroundImage": "./app/app/assets/icon/androi/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
+        "backgroundColor": "#525252"
       }
   },
   "privacy": "public",

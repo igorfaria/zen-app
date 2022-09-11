@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Dimensions, Text, View } from 'react-native'
 import React, { memo } from 'react'
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming, ZoomIn } from 'react-native-reanimated'
 import {Gesture, GestureDetector} from 'react-native-gesture-handler'
@@ -18,7 +18,7 @@ const TIME_TO_ACTIVATE_PAN : number = 400
 const FADE_HIDDEN : number = 0.25
 const FADE_NEXT : number = 1 // it must be different than FADE_HIDDEN
 
-const ZenItem : Function = (props: any) : JSX.Element => {
+const ZenItem : React.FC = (props: any) : JSX.Element => {
 
   const { customFontStyle } : any = React.useContext(ZC)
 
@@ -156,4 +156,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default memo<any>(ZenItem)
+export default memo<JSX.Element>(ZenItem)

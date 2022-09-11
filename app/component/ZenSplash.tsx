@@ -28,7 +28,7 @@ const ZenSplash : Function = () : JSX.Element => {
         }
     }
 
-    setTimeout(() => bounce(true), 1251)
+    setTimeout(() => bounce(true), 1000)
 
     const style = useAnimatedStyle(() => {
         return {
@@ -39,19 +39,18 @@ const ZenSplash : Function = () : JSX.Element => {
         };
     })
 
-    const icon : any = require('../assets/icon/ninja.png')
+    const icon : any = require('../assets/icon/android/play_store_512.png')
     return (
         <View style={
                 {
                     flex: 1, 
                     alignItems: 'center', 
                     justifyContent: 'center', 
-                    backgroundColor: 'rgba(0, 0, 0, .7)',
+                    backgroundColor: '#525252',
                 }}>
             
                 <TouchableWithoutFeedback 
-                    style={ {  width: '100%', alignItems: 'center'} }
-                    onPress={() => bounce()}>        
+                    style={ {  width: '100%', alignItems: 'center'} }>
                     <Animated.Image source={ icon } 
                         resizeMode='contain'
                         style={style} />  
